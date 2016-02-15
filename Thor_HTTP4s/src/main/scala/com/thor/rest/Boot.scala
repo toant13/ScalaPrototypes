@@ -1,5 +1,7 @@
 package com.thor.rest
 
+import com.thor.rest.position.PositionService
+import com.thor.rest.transaction.TransactionService
 import org.http4s.server.blaze.BlazeBuilder
 
 /**
@@ -7,7 +9,8 @@ import org.http4s.server.blaze.BlazeBuilder
   */
 object Boot extends App{
   BlazeBuilder.bindHttp(8080)
-    .mountService(ThorService.service, "/")
+    .mountService(TransactionService.endpoints, "/")
+    .mountService(PositionService.endpoints, "/")
     .run
     .awaitShutdown()
 }
