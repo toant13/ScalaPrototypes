@@ -2,20 +2,36 @@ package com.thor.rest.position
 
 import org.apache.spark.{SparkContext, SparkConf}
 import org.http4s.dsl._
-import org.http4s.server.HttpService
+import org.http4s.server.{Router, HttpService}
 import org.http4s.server.middleware.AutoSlash
+
+import scala.concurrent.ExecutionContext
 
 /**
   * Created by toantran on 2/15/16.
   */
 object PositionService {
 
-  val sparkConf: SparkConf = new SparkConf().setAppName("spark-spray-starter").setMaster("local")
-  val sc: SparkContext = new SparkContext(sparkConf)
+  def service(implicit executionContext: ExecutionContext = ExecutionContext.global): HttpService = Router(
+    "/v1/thor/positions" -> allPositions,
+    "/v1/thor/positions/accounts" -> filterPositions
+  )
 
 
-  val endpoints = AutoSlash.apply(HttpService {
-    case GET -> Root / "v1" / "thor" / "positions" / "accounts" =>
-      Ok("other service")
+  def allPositions(implicit executionContext: ExecutionContext) = AutoSlash.apply(HttpService {
+    case GET -> Root =>
+      Ok("This is the position service")
+    case GET -> Root / "accounts" =>
+      Ok("position service")
+
   })
+
+  def filterPositions(implicit executionContext: ExecutionContext) = AutoSlash.apply(HttpService {
+    case GET -> Root / account_id =>
+      Ok("account for: " + account_id)
+    case GET -> Root / account_id / "instruments" / instrument_id =>
+      Ok("account for: " + account_id + " and for instrument: " + instrument_id)
+  })
+
+
 }

@@ -9,8 +9,8 @@ import org.http4s.server.blaze.BlazeBuilder
   */
 object Boot extends App{
   BlazeBuilder.bindHttp(8080)
-    .mountService(TransactionService.endpoints, "/")
-    .mountService(PositionService.endpoints, "/")
+    .mountService(TransactionService.service, "/")
+    .mountService(PositionService.service, "/")
     .run
     .awaitShutdown()
 }
